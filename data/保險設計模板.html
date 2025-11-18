@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>安心保险 - A5宣传单</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#E63946',
+                        accent: '#FFB703',
+                    },
+                    fontFamily: {
+                        sans: ['SimHei', 'Arial', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            }
+        }
+        
+        /* A5尺寸设置 - 148mm×210mm */
+        @page {
+            size: A5;
+            margin: 10mm;
+        }
+        body {
+            width: 148mm;
+            height: 210mm;
+            margin: 0;
+            padding: 0;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body class="bg-white font-sans">
+    <!-- A5宣传单主体 -->
+    <div class="w-full h-full p-5">
+        <!-- 顶部区域 -->
+        <header class="text-center mb-4">
+            <div class="flex justify-center items-center">
+                <i class="fa fa-shield text-primary text-3xl mr-2"></i>
+                <h1 class="text-2xl font-bold text-primary">安心保险</h1>
+            </div>
+            <p class="text-sm text-gray-600 mt-1">全方位保障 · 安心之选</p>
+            <div class="w-full h-0.5 bg-primary mt-2 mb-3"></div>
+        </header>
+        
+        <!-- 主要内容区域 -->
+        <main class="grid grid-cols-2 gap-4 text-sm">
+            <!-- 左侧内容 -->
+            <div>
+                <!-- 保险类型 -->
+                <div class="mb-3">
+                    <h2 class="text-primary font-bold flex items-center text-base mb-2">
+                        <i class="fa fa-check-circle mr-1"></i>保障范围
+                    </h2>
+                    <div class="space-y-2">
+                        <div class="flex items-start">
+                            <i class="fa fa-heartbeat text-secondary mt-0.5 mr-2"></i>
+                            <div>
+                                <span class="font-medium">医疗保险</span>
+                                <p class="text-xs text-gray-600">住院/门诊/手术</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fa fa-ambulance text-secondary mt-0.5 mr-2"></i>
+                            <div>
+                                <span class="font-medium">意外保险</span>
+                                <p class="text-xs text-gray-600">医疗/伤残/身故</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fa fa-users text-secondary mt-0.5 mr-2"></i>
+                            <div>
+                                <span class="font-medium">人寿保险</span>
+                                <p class="text-xs text-gray-600">定期/终身寿险</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fa fa-home text-secondary mt-0.5 mr-2"></i>
+                            <div>
+                                <span class="font-medium">财产保险</span>
+                                <p class="text-xs text-gray-600">房屋/车辆保障</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 核心优势 -->
+                <div>
+                    <h2 class="text-primary font-bold flex items-center text-base mb-2">
+                        <i class="fa fa-star mr-1"></i>选择我们
+                    </h2>
+                    <ul class="space-y-1.5 text-xs">
+                        <li class="flex items-start">
+                            <i class="fa fa-check text-green-600 mt-0.5 mr-2"></i>
+                            <span>18年专业保险经验</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check text-green-600 mt-0.5 mr-2"></i>
+                            <span>3个工作日快速理赔</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check text-green-600 mt-0.5 mr-2"></i>
+                            <span>50万+客户信赖选择</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fa fa-check text-green-600 mt-0.5 mr-2"></i>
+                            <span>24/7全天候客户服务</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- 右侧内容 -->
+            <div>
+                <!-- 优惠活动 -->
+                <div class="bg-accent/20 border border-accent rounded p-3 mb-3 text-center">
+                    <h3 class="font-bold text-primary text-base">限时特惠</h3>
+                    <p class="text-secondary font-bold">首月保费5折</p>
+                    <p class="text-xs text-gray-600">新客户专享 · 本月有效</p>
+                </div>
+                
+                <!-- 价格方案 -->
+                <div class="mb-3">
+                    <h2 class="text-primary font-bold flex items-center text-base mb-2">
+                        <i class="fa fa-tag mr-1"></i>灵活方案
+                    </h2>
+                    <div class="space-y-2">
+                        <div class="border border-gray-200 rounded p-2">
+                            <div class="font-medium flex justify-between">
+                                <span>基础保障</span>
+                                <span class="text-primary">¥29/月</span>
+                            </div>
+                            <p class="text-xs text-gray-600">个人基础需求</p>
+                        </div>
+                        
+                        <div class="border-2 border-primary rounded p-2 bg-primary/5">
+                            <div class="font-medium flex justify-between">
+                                <span>家庭计划</span>
+                                <span class="text-primary">¥59/月</span>
+                            </div>
+                            <p class="text-xs text-gray-600">3-4人全面保障</p>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded p-2">
+                            <div class="font-medium flex justify-between">
+                                <span>尊享计划</span>
+                                <span class="text-primary">¥99/月</span>
+                            </div>
+                            <p class="text-xs text-gray-600">顶级保障服务</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 联系方式 -->
+                <div>
+                    <h2 class="text-primary font-bold flex items-center text-base mb-2">
+                        <i class="fa fa-phone mr-1"></i>立即咨询
+                    </h2>
+                    <div class="space-y-1.5">
+                        <p class="flex items-center">
+                            <i class="fa fa-mobile text-secondary mr-2 text-lg"></i>
+                            <span>400-888-9999</span>
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fa fa-envelope text-secondary mr-2"></i>
+                            <span class="text-xs">service@anxin.com</span>
+                        </p>
+                        <p class="flex items-center">
+                            <i class="fa fa-clock-o text-secondary mr-2"></i>
+                            <span>9:00-21:00 全天候</span>
+                        </p>
+                    </div>
+                    
+                    <!-- 二维码区域 -->
+                    <div class="mt-3 flex items-center">
+                        <div class="w-20 h-20 bg-white border border-gray-200 flex items-center justify-center text-xs text-gray-500">
+                            微信扫码
+                        </div>
+                        <div class="ml-2 text-xs">
+                            <p class="font-medium">关注公众号</p>
+                            <p class="text-gray-600">获取更多优惠</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- 底部信息 -->
+        <footer class="mt-4 pt-2 border-t border-gray-200 text-center text-xs text-gray-500">
+            <p>安心保险有限公司 © 2023 | 保险牌照：XYZ123456</p>
+            <p class="mt-0.5">本单内容仅供参考，具体以合同为准</p>
+        </footer>
+    </div>
+</body>
+</html>

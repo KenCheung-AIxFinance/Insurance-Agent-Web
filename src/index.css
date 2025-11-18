@@ -1,0 +1,91 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@plugin "@tailwindcss/typography";
+
+/* Theme variables (Shadcn-compatible) */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 5%;
+
+    --muted: 215 16% 92%;
+    --muted-foreground: 215 16% 35%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 5%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 5%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 191 38% 42%;
+
+    /* Insurance/medical palette */
+    --primary: 191 78% 37%; /* teal-600 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222.2 47% 11%; /* slate-900 */
+    --secondary-foreground: 0 0% 100%;
+
+    --accent: 217 33% 17%; /* slate-800 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Semantic colors retained */
+    --success: 152 76% 36%; /* emerald-600 */
+    --warning: 38 92% 50%; /* amber-500 */
+    --error: 0 84% 60%; /* red-500 */
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 5%;
+    --foreground: 0 0% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 191 38% 42%;
+
+    --primary: 191 78% 37%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222.2 47% 11%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 76% 36%;
+    --warning: 38 92% 50%;
+    --error: 0 62% 60%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+}
+
+/* Page transitions */
+.page-enter { opacity: 0; transform: translateY(8px); }
+.page-enter-active { opacity: 1; transform: translateY(0); transition: opacity 200ms ease, transform 200ms ease; }
+.page-exit { opacity: 1; }
+.page-exit-active { opacity: 0; transition: opacity 150ms ease; }
+
+/* Form feedback */
+.form-error { color: hsl(var(--error)); }
+.form-hint { color: hsl(var(--muted-foreground)); }
