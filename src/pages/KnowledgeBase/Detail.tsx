@@ -11,7 +11,7 @@ import { Button } from "@/components/general/ui/button";
 
 export default function KnowledgeBaseDetail() {
   const { id } = useParams();
-  const file = null; // 計劃書功能已移除
+  const file: any = null; // 計劃書功能已移除
 
   if (!file) {
     return (
