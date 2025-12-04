@@ -60,7 +60,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <span className="font-semibold text-slate-900">InsurAgent</span>
           </Link>
           <nav className="flex gap-2">
-            <Button variant="ghost" asChild><Link to="/">首頁</Link></Button>
+            <Button variant="ghost" asChild>
+              <Link to="/overview">概覽</Link>
+            </Button>
+            <Button variant="ghost" asChild>
+              <Link to="/projects">專案</Link>
+            </Button>
             <Button variant="ghost" asChild><Link to="/knowledge-base">知識庫</Link></Button>
             <Button variant="ghost" asChild><Link to="/chat">智能問答</Link></Button>
             <Button variant="ghost" asChild><Link to="/intelligent-creation">智能創作</Link></Button>

@@ -7,7 +7,8 @@ import { Loader } from '@/components/general/ui/loader';
 import { auth } from './firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
-const Home = lazy(() => import('./pages/Home'));
+const Overview = lazy(() => import('./pages/Home'));
+const Projects = lazy(() => import('./pages/Projects'));
 const KnowledgeBaseList = lazy(() => import('./pages/KnowledgeBase/List'));
 const KnowledgeBaseForm = lazy(() => import('./pages/KnowledgeBase/Form'));
 const KnowledgeBaseDetail = lazy(() => import('./pages/KnowledgeBase/Detail'));
@@ -86,9 +87,19 @@ export default function App() {
               </ProtectedRoute>
             } />
             <Route path="/" element={
+              <Navigate to="/overview" replace />
+            } />
+            <Route path="/overview" element={
               <ProtectedRoute>
                 <PageWrapper>
-                  <Home />
+                  <Overview />
+                </PageWrapper>
+              </ProtectedRoute>
+            } />
+            <Route path="/projects" element={
+              <ProtectedRoute>
+                <PageWrapper>
+                  <Projects />
                 </PageWrapper>
               </ProtectedRoute>
             } />
