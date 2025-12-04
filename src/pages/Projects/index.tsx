@@ -90,14 +90,14 @@ const ProjectsPage = () => {
         </Button>
       </div>
 
-      <Tabs defaultValue="all" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <TabsList>
-            <TabsTrigger value="all" onClick={() => setActiveTab('all')}>全部</TabsTrigger>
-            <TabsTrigger value="draft" onClick={() => setActiveTab('draft')}>草稿</TabsTrigger>
-            <TabsTrigger value="in_progress" onClick={() => setActiveTab('in_progress')}>進行中</TabsTrigger>
-            <TabsTrigger value="completed" onClick={() => setActiveTab('completed')}>已完成</TabsTrigger>
-            <TabsTrigger value="archived" onClick={() => setActiveTab('archived')}>已封存</TabsTrigger>
+            <TabsTrigger value="all">全部</TabsTrigger>
+            <TabsTrigger value="draft">草稿</TabsTrigger>
+            <TabsTrigger value="in_progress">進行中</TabsTrigger>
+            <TabsTrigger value="completed">已完成</TabsTrigger>
+            <TabsTrigger value="archived">已封存</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-2 w-full md:w-auto">
@@ -132,7 +132,7 @@ const ProjectsPage = () => {
           </div>
         </div>
 
-        <TabsContent value="all" className="space-y-4">
+        <TabsContent value={activeTab} className="space-y-4">
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
               <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
