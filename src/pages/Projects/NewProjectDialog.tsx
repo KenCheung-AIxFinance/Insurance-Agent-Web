@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sparkles, Loader2 } from 'lucide-react';
 import {
     Dialog,
@@ -29,6 +30,7 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
     onOpenChange,
     onProjectCreated,
 }) => {
+    const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [clientName, setClientName] = useState('');
     const [summary, setSummary] = useState('');
@@ -112,8 +114,7 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
                 tags: selectedTags.map((tag) => tag.name), // Send tag names as strings
                 status: 'draft',
             };
-
-            await ProjectService.createProject(projectData);
+            const newProject = await ProjectService.createProject(projectData);
 
             // Reset form
             setTitle('');
@@ -124,6 +125,9 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
             // Close dialog and notify parent
             onOpenChange(false);
             onProjectCreated?.();
+
+            // Navigate to the new project page
+            navigate(`/projects/${newProject.case_id}`);
         } catch (error) {
             console.error('Failed to create project:', error);
             // TODO: Show error toast

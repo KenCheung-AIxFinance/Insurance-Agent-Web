@@ -1,56 +1,15 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/general/ui/card';
 import { Button } from '@/components/general/ui/button';
-import { Plus, Search, Filter, List, Grid, Tag, Clock, CheckCircle, FileText, Archive } from 'lucide-react';
+import { Plus, Search, Filter, List, Grid, Tag, Clock, CheckCircle, FileText, Archive, Loader2 } from 'lucide-react';
 import { Input } from '@/components/general/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { NewProjectDialog } from './NewProjectDialog';
+import { ProjectService } from '@/services/projectService';
+import type { Case } from '@/types/project';
 
-type Project = {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  updatedAt: string;
-  status: 'draft' | 'in_progress' | 'completed' | 'archived';
-};
-
-// Mock data - will be replaced with API call
-const mockProjects: Project[] = [
-  {
-    id: '1',
-    title: '個人保險組合',
-    description: '包含醫療、意外、人壽保險的綜合規劃',
-    tags: ['醫療', '意外', '人壽'],
-    updatedAt: '2023-12-01',
-    status: 'in_progress',
-  },
-  {
-    id: '2',
-    title: '家庭保險方案',
-    description: '全家人的保險規劃，涵蓋醫療、意外和教育基金',
-    tags: ['家庭', '醫療', '教育'],
-    updatedAt: '2023-11-28',
-    status: 'draft',
-  },
-  {
-    id: '3',
-    title: '退休規劃',
-    description: '長期退休儲蓄與投資規劃',
-    tags: ['退休', '投資'],
-    updatedAt: '2023-11-15',
-    status: 'completed',
-  },
-  {
-    id: '4',
-    title: '舊有保單整理',
-    description: '整理並分析現有保單內容',
-    tags: ['保單整理', '分析'],
-    updatedAt: '2023-10-20',
-    status: 'archived',
-  },
-];
+// Using the Case type from project.ts
 
 const statusConfig = {
   draft: {
@@ -75,7 +34,7 @@ const statusConfig = {
   },
 };
 
-const StatusBadge = ({ status }: { status: Project['status'] }) => {
+const StatusBadge = ({ status }: { status: 'draft' | 'in_progress' | 'completed' | 'archived' }) => {
   const config = statusConfig[status];
   const Icon = config.icon;
 
@@ -88,12 +47,34 @@ const StatusBadge = ({ status }: { status: Project['status'] }) => {
 };
 
 const ProjectsPage = () => {
-  const [viewType, setViewType] = React.useState<'grid' | 'list'>('grid');
-  const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+  const [projects, setProjects] = useState<Case[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('all');
+
+  const fetchProjects = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await ProjectService.getMyProjects();
+      setProjects(data);
+    } catch (err) {
+      console.error('Failed to fetch projects:', err);
+      setError('無法載入項目列表，請稍後再試');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
   const handleProjectCreated = () => {
-    // TODO: Refresh project list from API
-    console.log('Project created, refreshing list...');
+    fetchProjects();
   };
 
   return (
@@ -112,28 +93,29 @@ const ProjectsPage = () => {
       <Tabs defaultValue="all" className="space-y-4">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <TabsList>
-            <TabsTrigger value="all">全部</TabsTrigger>
-            <TabsTrigger value="active">進行中</TabsTrigger>
-            <TabsTrigger value="archived">已封存</TabsTrigger>
+            <TabsTrigger value="all" onClick={() => setActiveTab('all')}>全部</TabsTrigger>
+            <TabsTrigger value="draft" onClick={() => setActiveTab('draft')}>草稿</TabsTrigger>
+            <TabsTrigger value="in_progress" onClick={() => setActiveTab('in_progress')}>進行中</TabsTrigger>
+            <TabsTrigger value="completed" onClick={() => setActiveTab('completed')}>已完成</TabsTrigger>
+            <TabsTrigger value="archived" onClick={() => setActiveTab('archived')}>已封存</TabsTrigger>
           </TabsList>
 
           <div className="flex items-center gap-2 w-full md:w-auto">
-            <div className="relative flex-1 md:w-64">
+            <div className="relative w-full md:w-64">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="搜索項目..."
+                placeholder="搜尋項目..."
                 className="w-full pl-8"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button variant="outline" size="icon">
-              <Filter className="h-4 w-4" />
-            </Button>
             <div className="flex border rounded-md">
               <Button
                 variant={viewType === 'grid' ? 'secondary' : 'ghost'}
                 size="icon"
-                className="rounded-r-none h-9 w-9"
+                className="h-9 w-9 rounded-r-none"
                 onClick={() => setViewType('grid')}
               >
                 <Grid className="h-4 w-4" />
@@ -141,7 +123,7 @@ const ProjectsPage = () => {
               <Button
                 variant={viewType === 'list' ? 'secondary' : 'ghost'}
                 size="icon"
-                className="rounded-l-none h-9 w-9"
+                className="h-9 w-9 rounded-l-none border-l"
                 onClick={() => setViewType('list')}
               >
                 <List className="h-4 w-4" />
@@ -151,17 +133,70 @@ const ProjectsPage = () => {
         </div>
 
         <TabsContent value="all" className="space-y-4">
-          {viewType === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {mockProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
-              ))}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <span className="ml-2">載入中...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-8 text-destructive">
+              <p>{error}</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={fetchProjects}
+              >
+                重試
+              </Button>
+            </div>
+          ) : projects.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">尚未建立任何項目</p>
+              <Button 
+                className="mt-4"
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                創建新項目
+              </Button>
+            </div>
+          ) : viewType === 'grid' ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {projects
+                .filter(project => {
+                  const searchLower = searchTerm.toLowerCase();
+                  return (
+                    project.title.toLowerCase().includes(searchLower) ||
+                    (project.summary && project.summary.toLowerCase().includes(searchLower)) ||
+                    project.client_name.toLowerCase().includes(searchLower) ||
+                    project.tags.some(tag => tag.toLowerCase().includes(searchLower))
+                  );
+                })
+                .filter(project => 
+                  activeTab === 'all' || project.status === activeTab
+                )
+                .map((project) => (
+                  <ProjectCard key={project.case_id} project={project} />
+                ))}
             </div>
           ) : (
-            <div className="space-y-2">
-              {mockProjects.map((project) => (
-                <ProjectListItem key={project.id} project={project} />
-              ))}
+            <div className="space-y-4">
+              {projects
+                .filter(project => {
+                  const searchLower = searchTerm.toLowerCase();
+                  return (
+                    project.title.toLowerCase().includes(searchLower) ||
+                    (project.summary && project.summary.toLowerCase().includes(searchLower)) ||
+                    project.client_name.toLowerCase().includes(searchLower) ||
+                    project.tags.some(tag => tag.toLowerCase().includes(searchLower))
+                  );
+                })
+                .filter(project => 
+                  activeTab === 'all' || project.status === activeTab
+                )
+                .map((project) => (
+                  <ProjectListItem key={project.case_id} project={project} />
+                ))}
             </div>
           )}
         </TabsContent>
@@ -176,9 +211,9 @@ const ProjectsPage = () => {
   );
 };
 
-const ProjectCard = ({ project }: { project: Project }) => (
+const ProjectCard = ({ project }: { project: Case }) => (
   <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
-    <a href={`/projects/${project.id}`} className="flex-1 flex flex-col">
+    <a href={`/projects/${project.case_id}`} className="flex-1 flex flex-col">
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start gap-2">
           <CardTitle className="text-lg line-clamp-1">{project.title}</CardTitle>
@@ -187,7 +222,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
       </CardHeader>
       <CardContent className="p-4 pt-0 flex-1 flex flex-col">
         <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-          {project.description}
+          {project.summary}
         </p>
         <div className="mt-auto">
           <TooltipProvider>
@@ -224,7 +259,7 @@ const ProjectCard = ({ project }: { project: Project }) => (
             </Tooltip>
           </TooltipProvider>
           <div className="text-xs text-muted-foreground">
-            更新於 {project.updatedAt}
+            更新於 {new Date(project.updated_at).toLocaleDateString()}
           </div>
         </div>
       </CardContent>
@@ -232,9 +267,9 @@ const ProjectCard = ({ project }: { project: Project }) => (
   </Card>
 );
 
-const ProjectListItem = ({ project }: { project: Project }) => (
+const ProjectListItem = ({ project }: { project: Case }) => (
   <Card>
-    <a href={`/projects/${project.id}`} className="block">
+    <a href={`/projects/${project.case_id}`} className="block">
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
@@ -243,7 +278,7 @@ const ProjectListItem = ({ project }: { project: Project }) => (
               <StatusBadge status={project.status} />
             </div>
             <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-              {project.description}
+              {project.summary}
             </p>
             <div className="flex flex-wrap gap-1 mt-2">
               {project.tags.map((tag) => (
@@ -257,8 +292,8 @@ const ProjectListItem = ({ project }: { project: Project }) => (
             </div>
           </div>
           <div className="ml-4 flex-shrink-0">
-            <div className="text-sm text-muted-foreground">
-              更新於 {project.updatedAt}
+            <div className="text-xs text-muted-foreground">
+              更新於 {new Date(project.updated_at).toLocaleDateString()}
             </div>
           </div>
         </div>

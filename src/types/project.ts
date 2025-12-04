@@ -10,6 +10,7 @@ export type CreateCaseInput = {
     summary: string;
     tags: string[]; // Array of tag names (strings)
     status?: 'draft' | 'in_progress' | 'completed' | 'archived';
+    created_by?: string;
 };
 
 export type Case = {

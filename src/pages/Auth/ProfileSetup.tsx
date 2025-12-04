@@ -35,7 +35,7 @@ const ProfileSetup: React.FC = () => {
 
             // 調用後端 API 更新用戶資料，只檢查響應狀態碼
             const idToken = await user.getIdToken();
-            const response = await fetch(endpoints.users_me, {
+            const response = await fetch(endpoints.users.me, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

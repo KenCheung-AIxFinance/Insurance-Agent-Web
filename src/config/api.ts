@@ -87,6 +87,44 @@ export const api = {
   },
 
   // Project/Case Management
+  getMyProjects: async () => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(endpoints.cases.me, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch user projects:', error);
+      throw error;
+    }
+  },
+
+  getProjectbyId: async (projectId: string) => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(`${endpoints.cases.base}/${projectId}`, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch project:', error);
+      throw error;
+    }
+  },
+
   createProject: async (data: any) => {
     try {
       const headers = await api.getAuthHeaders();
