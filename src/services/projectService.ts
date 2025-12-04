@@ -40,4 +40,28 @@ export const ProjectService = {
             throw error;
         }
     },
+
+    /**
+     * Delete a project by ID
+     */
+    deleteProject: async (projectId: string): Promise<void> => {
+        try {
+            await api.deleteProject(projectId);
+        } catch (error) {
+            console.error('ProjectService.deleteProject failed:', error);
+            throw error;
+        }
+    },
+
+    /**
+     * Update a project
+     */
+    updateProject: async (caseId: string, data: Partial<CreateCaseInput>): Promise<Case> => {
+        try {
+            return await api.updateProject(caseId, data);
+        } catch (error) {
+            console.error('ProjectService.updateProject failed:', error);
+            throw error;
+        }
+    },
 };

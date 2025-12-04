@@ -1,5 +1,7 @@
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8787';
 
+import type { Case } from '@/types/project';
+
 export const endpoints = {
   users: {
     me: `${API_BASE_URL}/users/me`,
@@ -221,8 +223,7 @@ export const api = {
   polishSummary: async (content: string): Promise<{original: string; polished: string}> => {
     try {
       const headers = await api.getAuthHeaders();
-
-      const response = await fetch(`${endpoints.cases.polishSummary}`, {
+      const response = await fetch(endpoints.cases.polishSummary, {
         method: 'POST',
         headers,
         body: JSON.stringify({ content }),
@@ -235,7 +236,51 @@ export const api = {
 
       return await response.json();
     } catch (error) {
-      console.error('Failed to polish case content:', error);
+      console.error('Failed to polish summary:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update a project
+   */
+  updateProject: async (caseId: string, data: Partial<Case>): Promise<Case> => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(`${endpoints.cases.base}/${caseId}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to update project:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a project by ID
+   */
+  deleteProject: async (projectId: string): Promise<void> => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(`${endpoints.cases.base}/${projectId}`, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Failed to delete project:', error);
       throw error;
     }
   },

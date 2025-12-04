@@ -11,20 +11,27 @@ export type CreateCaseInput = {
     tags: string[]; // Array of tag names (strings)
     status?: 'draft' | 'in_progress' | 'completed' | 'archived';
     created_by?: string;
+    pinned?: boolean;
 };
 
-export type Case = {
-    case_id: string;
+export type CaseBase = {
     title: string;
     client_name: string;
     created_by: string;
-    created_at: string;
-    updated_at: string;
     status: 'draft' | 'in_progress' | 'completed' | 'archived';
     tags: string[];
     summary: string;
     current_output_id: string | null;
     public_shareable_url: string | null;
+    pinned: boolean;
+};
+
+// Define the Case type by extending CaseBase with the necessary fields
+export type Case = CaseBase & {
+    case_id: string;
+    user_id: string;
+    created_at: string;
+    updated_at: string;
 };
 
 // Legacy type alias for backward compatibility

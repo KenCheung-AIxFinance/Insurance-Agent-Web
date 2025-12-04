@@ -22,29 +22,47 @@ import type { Tag, CreateCaseInput } from '@/types/project';
 interface NewProjectDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
+    project?: any | null;
     onProjectCreated?: () => void;
+    onProjectUpdated?: (data: CreateCaseInput) => Promise<void>;
 }
 
 export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
     open,
     onOpenChange,
+    project,
     onProjectCreated,
+    onProjectUpdated,
 }) => {
     const navigate = useNavigate();
-    const [title, setTitle] = useState('');
-    const [clientName, setClientName] = useState('');
-    const [summary, setSummary] = useState('');
+    const [title, setTitle] = useState(project?.title || '');
+    const [clientName, setClientName] = useState(project?.client_name || '');
+    const [summary, setSummary] = useState(project?.summary || '');
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [availableTags, setAvailableTags] = useState<Tag[]>([]);
     const [isPolishing, setIsPolishing] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Load available tags when dialog opens
+    // Load available tags and set initial values when dialog opens or project changes
     React.useEffect(() => {
         if (open) {
             loadTags();
+            if (project) {
+                setTitle(project.title);
+                setClientName(project.client_name);
+                setSummary(project.summary || '');
+                setSelectedTags(project.tags?.map((name: string) => ({ id: name, name })) || []);
+            }
+        } else {
+            // Reset form when dialog is closed
+            if (!open) {
+                setTitle('');
+                setClientName('');
+                setSummary('');
+                setSelectedTags([]);
+            }
         }
-    }, [open]);
+    }, [open, project]);
 
     const loadTags = async () => {
         try {
@@ -112,24 +130,24 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
                 client_name: clientName.trim(),
                 summary: summary.trim(),
                 tags: selectedTags.map((tag) => tag.name), // Send tag names as strings
-                status: 'draft',
+                status: project?.status || 'draft',
             };
-            const newProject = await ProjectService.createProject(projectData);
 
-            // Reset form
-            setTitle('');
-            setClientName('');
-            setSummary('');
-            setSelectedTags([]);
+            if (project && onProjectUpdated) {
+                // Update existing project
+                await onProjectUpdated(projectData);
+            } else {
+                // Create new project
+                const newProject = await ProjectService.createProject(projectData);
+                onProjectCreated?.();
+                // Navigate to the new project page
+                navigate(`/projects/${newProject.case_id}`);
+            }
 
-            // Close dialog and notify parent
+            // Close dialog
             onOpenChange(false);
-            onProjectCreated?.();
-
-            // Navigate to the new project page
-            navigate(`/projects/${newProject.case_id}`);
         } catch (error) {
-            console.error('Failed to create project:', error);
+            console.error(project ? 'Failed to update project:' : 'Failed to create project:', error);
             // TODO: Show error toast
         } finally {
             setIsSubmitting(false);
@@ -142,9 +160,9 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle>新建項目</DialogTitle>
+                    <DialogTitle>{project ? '編輯項目' : '創建新項目'}</DialogTitle>
                     <DialogDescription>
-                        創建一個新的保險項目，填寫項目信息和相關標籤。
+                        {project ? '更新項目信息。' : '填寫以下信息以創建一個新的保險項目。'}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -228,14 +246,14 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
                         >
                             取消
                         </Button>
-                        <Button type="submit" disabled={!isFormValid || isSubmitting}>
+                        <Button type="submit" disabled={isSubmitting}>
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    創建中...
+                                    {project ? '更新中...' : '創建中...'}
                                 </>
                             ) : (
-                                '創建項目'
+                                project ? '更新項目' : '創建項目'
                             )}
                         </Button>
                     </DialogFooter>

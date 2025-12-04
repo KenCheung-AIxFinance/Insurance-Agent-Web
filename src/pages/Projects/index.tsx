@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/general/ui/card';
 import { Button } from '@/components/general/ui/button';
-import { Plus, Search, Filter, List, Grid, Tag, Clock, CheckCircle, FileText, Archive, Loader2 } from 'lucide-react';
+import { Plus, Search, List, Grid, Tag, Clock, CheckCircle, FileText, Archive, Loader2, Trash2, ChevronDown, Pin } from 'lucide-react';
 import { Input } from '@/components/general/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { NewProjectDialog } from './NewProjectDialog';
 import { ProjectService } from '@/services/projectService';
-import type { Case } from '@/types/project';
+import { ProjectContextMenu } from '@/components/project/ProjectContextMenu';
+import { toast } from 'sonner';
+import type { Case, CreateCaseInput } from '@/types/project';
 
 // Using the Case type from project.ts
 
@@ -52,8 +55,72 @@ const ProjectsPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [viewType, setViewType] = useState<'grid' | 'list'>('grid');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<Case | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+  const [sortBy, setSortBy] = useState<{
+    field: 'updated_at' | 'created_at' | 'title' | 'client_name';
+    order: 'asc' | 'desc';
+  }>({ field: 'updated_at', order: 'desc' });
+
+  // Handle pin toggle
+  const handlePinToggle = async (projectId: string, pinned: boolean) => {
+    try {
+      const project = projects.find(p => p.case_id === projectId);
+      if (!project) return;
+
+      project.pinned = pinned;
+      
+      await ProjectService.updateProject(projectId, project);
+      
+      // Update local state to reflect the change immediately
+      setProjects(projects.map(project => 
+        project.case_id === projectId ? { ...project, pinned } : project
+      ));
+    } catch (error) {
+      console.error('Failed to update pin status:', error);
+      toast.error(pinned ? '置頂失敗' : '取消置頂失敗');
+    }
+  };
+
+  // Memoize the sorted and filtered projects for better performance
+  const sortedAndFilteredProjects: Case[] = React.useMemo(() => {
+    return projects
+      .filter((project: Case) => {
+        if (searchTerm.trim() === '') return true;
+        const searchLower = searchTerm.toLowerCase();
+        return (
+          project.title.toLowerCase().includes(searchLower) ||
+          (project.client_name || '').toLowerCase().includes(searchLower) ||
+          (project.summary || '').toLowerCase().includes(searchLower) ||
+          (project.tags || []).some((tag: string) => tag.toLowerCase().includes(searchLower))
+        );
+      })
+      .filter((project: Case) => 
+        activeTab === 'all' || project.status === activeTab
+      )
+      .sort((a: Case, b: Case) => {
+        // Pinned items always come first
+        if (a.pinned !== b.pinned) {
+          return a.pinned ? -1 : 1;
+        }
+        
+        let comparison = 0;
+        // Handle different sort fields
+        if (sortBy.field === 'title' || sortBy.field === 'client_name') {
+          const aValue = a[sortBy.field] || '';
+          const bValue = b[sortBy.field] || '';
+          comparison = aValue.localeCompare(bValue);
+        } else if (sortBy.field === 'updated_at' || sortBy.field === 'created_at') {
+          const aDate = new Date(a[sortBy.field] || 0).getTime();
+          const bDate = new Date(b[sortBy.field] || 0).getTime();
+          comparison = aDate - bDate;
+        }
+        
+        // Apply sort order
+        return sortBy.order === 'asc' ? comparison : -comparison;
+      });
+  }, [projects, searchTerm, activeTab, sortBy]);
 
   const fetchProjects = async () => {
     setIsLoading(true);
@@ -75,6 +142,39 @@ const ProjectsPage = () => {
 
   const handleProjectCreated = () => {
     fetchProjects();
+    setIsDialogOpen(false);
+  };
+
+  const handleEditProject = (project: Case) => {
+    setEditingProject(project);
+    setIsDialogOpen(true);
+  };
+
+  const handleUpdateProject = async (data: CreateCaseInput) => {
+    if (!editingProject) return;
+    
+    try {
+      await ProjectService.updateProject(editingProject.case_id, data);
+      toast.success('項目已更新');
+      fetchProjects();
+      setIsDialogOpen(false);
+      setEditingProject(null);
+    } catch (error) {
+      console.error('Failed to update project:', error);
+      toast.error('更新項目時發生錯誤');
+    }
+  };
+
+  const handleDeleteProject = async (projectId: string) => {
+    try {
+      await ProjectService.deleteProject(projectId);
+      toast.success('項目已刪除');
+      fetchProjects(); // Refresh the list
+    } catch (error) {
+      console.error('Failed to delete project:', error);
+      toast.error('刪除項目時發生錯誤');
+      throw error;
+    }
   };
 
   return (
@@ -111,6 +211,42 @@ const ProjectsPage = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
+            
+            <div className="flex items-center">
+              <Select
+                value={`${sortBy.field}:${sortBy.order}`}
+                onValueChange={(value) => {
+                  const [field, order] = value.split(':');
+                  setSortBy({
+                    field: field as any,
+                    order: order as 'asc' | 'desc'
+                  });
+                }}
+              >
+                <SelectTrigger className="w-[180px] md:w-[200px] h-9">
+                  <SelectValue placeholder="排序方式" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="updated_at:desc">
+                    最近更新 (新到舊)
+                  </SelectItem>
+                  <SelectItem value="updated_at:asc">
+                    最近更新 (舊到新)
+                  </SelectItem>
+                  <SelectItem value="created_at:desc">
+                    創建時間 (新到舊)
+                  </SelectItem>
+                  <SelectItem value="created_at:asc">
+                    創建時間 (舊到新)
+                  </SelectItem>
+                  <SelectItem value="title:asc">標題 (A-Z)</SelectItem>
+                  <SelectItem value="title:desc">標題 (Z-A)</SelectItem>
+                  <SelectItem value="client_name:asc">客戶名稱 (A-Z)</SelectItem>
+                  <SelectItem value="client_name:desc">客戶名稱 (Z-A)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
             <div className="flex border rounded-md">
               <Button
                 variant={viewType === 'grid' ? 'secondary' : 'ghost'}
@@ -149,7 +285,7 @@ const ProjectsPage = () => {
                 重試
               </Button>
             </div>
-          ) : projects.length === 0 ? (
+          ) : sortedAndFilteredProjects.length === 0 && !isLoading ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground">尚未建立任何項目</p>
               <Button 
@@ -162,41 +298,25 @@ const ProjectsPage = () => {
             </div>
           ) : viewType === 'grid' ? (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {projects
-                .filter(project => {
-                  const searchLower = searchTerm.toLowerCase();
-                  return (
-                    project.title.toLowerCase().includes(searchLower) ||
-                    (project.summary && project.summary.toLowerCase().includes(searchLower)) ||
-                    project.client_name.toLowerCase().includes(searchLower) ||
-                    project.tags.some(tag => tag.toLowerCase().includes(searchLower))
-                  );
-                })
-                .filter(project => 
-                  activeTab === 'all' || project.status === activeTab
-                )
-                .map((project) => (
-                  <ProjectCard key={project.case_id} project={project} />
-                ))}
+              {sortedAndFilteredProjects.map((project) => (
+                <ProjectContextMenu 
+                  key={project.case_id} 
+                  project={project}
+                  onEdit={handleEditProject}
+                  onDelete={handleDeleteProject}
+                  onPinToggle={handlePinToggle}
+                >
+                  <div>
+                    <ProjectCard project={project} />
+                  </div>
+                </ProjectContextMenu>
+              ))}
             </div>
           ) : (
             <div className="space-y-4">
-              {projects
-                .filter(project => {
-                  const searchLower = searchTerm.toLowerCase();
-                  return (
-                    project.title.toLowerCase().includes(searchLower) ||
-                    (project.summary && project.summary.toLowerCase().includes(searchLower)) ||
-                    project.client_name.toLowerCase().includes(searchLower) ||
-                    project.tags.some(tag => tag.toLowerCase().includes(searchLower))
-                  );
-                })
-                .filter(project => 
-                  activeTab === 'all' || project.status === activeTab
-                )
-                .map((project) => (
-                  <ProjectListItem key={project.case_id} project={project} />
-                ))}
+              {sortedAndFilteredProjects.map((project) => (
+                <ProjectListItem key={project.case_id} project={project} />
+              ))}
             </div>
           )}
         </TabsContent>
@@ -204,20 +324,32 @@ const ProjectsPage = () => {
 
       <NewProjectDialog
         open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
+        onOpenChange={(open) => {
+          setIsDialogOpen(open);
+          if (!open) setEditingProject(null);
+        }}
+        project={editingProject}
         onProjectCreated={handleProjectCreated}
+        onProjectUpdated={handleUpdateProject}
       />
     </div>
   );
 };
 
 const ProjectCard = ({ project }: { project: Case }) => (
-  <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
+  <Card className="h-full flex flex-col hover:shadow-md transition-shadow group">
     <a href={`/projects/${project.case_id}`} className="flex-1 flex flex-col">
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start gap-2">
-          <CardTitle className="text-lg line-clamp-1">{project.title}</CardTitle>
-          <StatusBadge status={project.status} />
+          <CardTitle className="text-lg line-clamp-1">
+            {project.title}
+          </CardTitle>
+          <div className="flex items-center gap-2">
+            {project.pinned && (
+              <Pin className="h-4 w-4 text-amber-500" />
+            )}
+            <StatusBadge status={project.status} />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="p-4 pt-0 flex-1 flex flex-col">
@@ -268,11 +400,24 @@ const ProjectCard = ({ project }: { project: Case }) => (
 );
 
 const ProjectListItem = ({ project }: { project: Case }) => (
-  <Card>
+  <Card className="group">
     <a href={`/projects/${project.case_id}`} className="block">
-      <div className="p-4">
+      <div className="p-4 relative">
+        {project.pinned && (
+          <div className="absolute top-2 right-2">
+            <Pin className="h-4 w-4 text-amber-500" />
+          </div>
+        )}
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <h3 className="font-medium text-sm">
+                {project.title}
+              </h3>
+              {project.pinned && (
+                <Pin className="h-3 w-3 text-amber-500" />
+              )}
+            </div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-base font-medium">{project.title}</h3>
               <StatusBadge status={project.status} />

@@ -82,9 +82,20 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
         // Prevent duplicate creation
         if (creatingTags.has(tagName)) return;
 
+        // Check if tag already exists in available tags but not selected
+        const existingTag = availableTags.find(tag => tag.name.toLowerCase() === tagName.toLowerCase());
+        if (existingTag) {
+            // If tag exists but not selected, select it
+            if (!selectedTags.some(t => t.id === existingTag.id)) {
+                onTagsChange([...selectedTags, existingTag]);
+            }
+            setSearchValue('');
+            return;
+        }
+
         // Optimistic update - create tag immediately in UI
         const tempTag: Tag = {
-            id: tagName, // Use tagName as a temporary ID
+            id: `temp-${Date.now()}`, // Use a more unique temporary ID
             name: tagName,
         };
 
@@ -100,14 +111,15 @@ export const TagSelector: React.FC<TagSelectorProps> = ({
         // Background API call - parent will update availableTags
         try {
             const newTag = await onCreateTag(tagName);
-            // Replace temp tag with real tag in selectedTags
-            onTagsChange(
-                selectedTags.map((t: Tag) => t.id === tagName ? newTag : t)
-            );
+            // Replace the temporary tag with the server-created tag
+            onTagsChange([
+                ...selectedTags.filter(t => t.id !== tempTag.id),
+                newTag
+            ]);
         } catch (error) {
             console.error('Failed to create tag:', error);
-            // On error, remove the optimistic tag
-            onTagsChange(selectedTags.filter((t: Tag) => t.id !== tagName));
+            // On error, remove the optimistically added tag
+            onTagsChange(selectedTags.filter(t => t.id !== tempTag.id));
             alert('創建標籤失敗，請重試');
         } finally {
             setCreatingTags(prev => {
