@@ -59,7 +59,7 @@ const EmailGoogleAuth: React.FC<EmailGoogleAuthProps> = ({ onLoginSuccess }) => 
     } finally {
       setLoading(false);
     }
-  }; 
+  };
 
   const handleGoogleAuth = async () => {
     setError(null);
