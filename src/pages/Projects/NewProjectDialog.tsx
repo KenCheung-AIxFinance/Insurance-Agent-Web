@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, Loader2 } from 'lucide-react';
+import { AIEffectWrapper } from './components/AIEffectWrapper';
 import {
     Dialog,
     DialogContent,
@@ -217,13 +218,16 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
                                 )}
                             </Button>
                         </div>
-                        <Textarea
-                            id="summary"
-                            value={summary}
-                            onChange={(e) => setSummary(e.target.value)}
-                            placeholder="輸入項目摘要，可以點擊潤色按鈕優化文字..."
-                            rows={4}
-                        />
+                        <AIEffectWrapper isLoading={isPolishing}>
+                            <Textarea
+                                id="summary"
+                                value={summary}
+                                onChange={(e) => setSummary(e.target.value)}
+                                placeholder="輸入項目摘要，可以點擊潤色按鈕優化文字..."
+                                rows={4}
+                                className="relative z-10 bg-background"
+                            />
+                        </AIEffectWrapper>
                     </div>
 
                     <div className="space-y-2">
@@ -262,3 +266,4 @@ export const NewProjectDialog: React.FC<NewProjectDialogProps> = ({
         </Dialog>
     );
 };
+ 

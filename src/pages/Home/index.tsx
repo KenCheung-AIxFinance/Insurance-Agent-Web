@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import { Link } from "react-router-dom";
+import { X } from "lucide-react";
 import {
   Card,
   CardHeader,
@@ -14,6 +15,25 @@ import { MessagesSquare, FolderOpen, FileText } from "lucide-react";
 import { mockHistory } from "@/mocks/chat";
 import { Empty } from "@/components/general/ui/empty";
 import { FaWandMagicSparkles } from "react-icons/fa6";
+
+// 本地存儲相關的 key
+const STORAGE_KEYS = {
+  FIRST_VISIT: 'firstVisitTimestamp',
+  TUTORIAL_HIDDEN: 'tutorialHiddenUntil'
+};
+
+// 檢查是否在新用戶期內（90天）
+const isWithinFirst90Days = (firstVisit: number) => {
+  const now = new Date().getTime();
+  const ninetyDaysInMs = 90 * 24 * 60 * 60 * 1000;
+  return (now - firstVisit) < ninetyDaysInMs;
+};
+
+// 檢查是否在隱藏期內（3小時）
+const isTutorialHidden = (hiddenUntil: number | null) => {
+  if (!hiddenUntil) return false;
+  return new Date().getTime() < hiddenUntil;
+};
 
 // 本頁使用 SWR 模擬加載與空狀態，後續可無縫切換至真實 API。
 const fetchDelay = (ms: number) => new Promise((res) => setTimeout(res, ms));
@@ -52,7 +72,44 @@ function ListSkeleton({ rows = 3 }: { rows?: number }) {
   );
 }
 
+
 export default function Home() {
+  const [showTutorial, setShowTutorial] = useState(false);
+  
+  useEffect(() => {
+    // 檢查是否顯示教學
+    const checkTutorialStatus = () => {
+      const now = new Date().getTime();
+      
+      // 獲取首次訪問時間
+      let firstVisit = localStorage.getItem(STORAGE_KEYS.FIRST_VISIT);
+      if (!firstVisit) {
+        // 如果是首次訪問，設置當前時間
+        firstVisit = now.toString();
+        localStorage.setItem(STORAGE_KEYS.FIRST_VISIT, firstVisit);
+      }
+      
+      // 檢查是否在90天內
+      const isNewUser = isWithinFirst90Days(parseInt(firstVisit, 10));
+      
+      // 檢查是否在隱藏期內
+      const hiddenUntil = localStorage.getItem(STORAGE_KEYS.TUTORIAL_HIDDEN);
+      const isHidden = hiddenUntil ? isTutorialHidden(parseInt(hiddenUntil, 10)) : false;
+      
+      setShowTutorial(isNewUser && !isHidden);
+    };
+    
+    checkTutorialStatus();
+  }, []);
+  
+  const handleDismissTutorial = () => {
+    // 設置3小時後再顯示
+    const hideUntil = new Date();
+    hideUntil.setHours(hideUntil.getHours() + 3);
+    localStorage.setItem(STORAGE_KEYS.TUTORIAL_HIDDEN, hideUntil.getTime().toString());
+    setShowTutorial(false);
+  };
+
   const {
     data: kbs,
     isLoading: kbLoading,
@@ -106,57 +163,68 @@ export default function Home() {
       </div>
 
       {/* 新手教學區塊 */}
-      <Card className="col-span-1">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
-            新手教學
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="flex flex-col items-center text-center space-y-3">
-              <FolderOpen className="h-12 w-12 text-primary mb-2" />
-              <h3 className="font-semibold text-lg text-slate-800">
-                1. 建立知識庫
-              </h3>
-              <p className="text-sm text-slate-600">
-                上傳保險相關文件，建立你的專業知識庫
-              </p>
+      {showTutorial && (
+        <Card className="col-span-1 relative">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="absolute right-2 top-2 h-6 w-6 rounded-full"
+            onClick={handleDismissTutorial}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">關閉教學</span>
+          </Button>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+              新手教學
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex flex-col items-center text-center space-y-3">
+                <FolderOpen className="h-12 w-12 text-primary mb-2" />
+                <h3 className="font-semibold text-lg text-slate-800">
+                  1. 建立知識庫
+                </h3>
+                <p className="text-sm text-slate-600">
+                  上傳保險相關文件，建立你的專業知識庫
+                </p>
+              </div>
+              <div className="flex flex-col items-center text-center space-y-3">
+                <MessagesSquare className="h-12 w-12 text-primary mb-2" />
+                <h3 className="font-semibold text-lg text-slate-800">
+                  2. 開始對話
+                </h3>
+                <p className="text-sm text-slate-600">
+                  向保險助手提問，獲得專業的保險建議
+                </p>
+              </div>
+              <div className="flex flex-col items-center text-center space-y-3">
+                <FileText className="h-12 w-12 text-primary mb-2" />
+                <h3 className="font-semibold text-lg text-slate-800">
+                  3. 生成文檔
+                </h3>
+                <p className="text-sm text-slate-600">
+                  基於對話或知識庫內容，快速生成專業文檔
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col items-center text-center space-y-3">
-              <MessagesSquare className="h-12 w-12 text-primary mb-2" />
-              <h3 className="font-semibold text-lg text-slate-800">
-                2. 開始對話
-              </h3>
-              <p className="text-sm text-slate-600">
-                向保險助手提問，獲得專業的保險建議
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center space-y-3">
-              <FileText className="h-12 w-12 text-primary mb-2" />
-              <h3 className="font-semibold text-lg text-slate-800">
-                3. 生成文檔
-              </h3>
-              <p className="text-sm text-slate-600">
-                基於對話或知識庫內容，快速生成專業文檔
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="flex items-center justify-between flex-wrap gap-3">
         <h2 className="text-2xl font-semibold tracking-tight text-slate-800">

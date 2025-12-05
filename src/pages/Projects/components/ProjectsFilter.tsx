@@ -30,23 +30,26 @@ export const ProjectsFilter = ({
       </TabsList>
     </Tabs>
 
-    <div className="flex items-center gap-2 w-full md:w-auto">
-      <div className="relative w-full md:w-64">
-        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+    <div className="flex items-stretch gap-2.5 w-full md:w-auto h-9">
+      <div className="relative w-full md:w-72">
+        <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="search"
           placeholder="搜尋項目..."
-          className="w-full pl-8"
+          className="w-full h-full pl-8"
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
-      <div className="flex border rounded-md">
+      <div className="flex bg-background/30 p-0.5 rounded-lg border border-border/50 h-full px-0.5">
         <button
           onClick={() => onViewChange('grid')}
-          className={`p-2 ${
-            viewType === 'grid' ? 'bg-secondary' : 'hover:bg-muted'
-          } rounded-l-md`}
+          className={`p-2 h-full w-9 flex items-center justify-center rounded-md transition-all ${
+            viewType === 'grid' 
+              ? 'bg-white shadow-sm text-primary' 
+              : 'text-muted-foreground/80 hover:bg-background/50 hover:text-foreground/80'
+          }`}
+          aria-label="網格視圖"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -68,9 +71,12 @@ export const ProjectsFilter = ({
         </button>
         <button
           onClick={() => onViewChange('list')}
-          className={`p-2 ${
-            viewType === 'list' ? 'bg-secondary' : 'hover:bg-muted'
-          } rounded-r-md border-l`}
+          className={`p-2 h-full w-9 flex items-center justify-center rounded-md transition-all ${
+            viewType === 'list' 
+              ? 'bg-white shadow-sm text-primary' 
+              : 'text-muted-foreground/80 hover:bg-background/50 hover:text-foreground/80'
+          }`}
+          aria-label="列表視圖"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
