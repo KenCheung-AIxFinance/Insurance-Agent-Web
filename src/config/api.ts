@@ -12,6 +12,13 @@ export const endpoints = {
     base: `${API_BASE_URL}/cases`,
     me: `${API_BASE_URL}/cases/me`,
     polishSummary: `${API_BASE_URL}/cases/polish-summary`,
+    recordFiles: (projectId: string) => `${API_BASE_URL}/projects/${projectId}/record_files`,
+    kycReport: (projectId: string) => `${API_BASE_URL}/projects/${projectId}/kyc_report`,
+    recommendations: (projectId: string) => `${API_BASE_URL}/projects/${projectId}/recommendations`,
+    faqs: (projectId: string) => `${API_BASE_URL}/projects/${projectId}/faqs`,
+  },
+  recordFiles: {
+    base: `${API_BASE_URL}/record_files`,
   },
   tags: {
     base: `${API_BASE_URL}/global_tags`,
@@ -220,7 +227,7 @@ export const api = {
   },
 
   // Case Polishing
-  polishSummary: async (content: string): Promise<{original: string; polished: string}> => {
+  polishSummary: async (content: string): Promise<{ original: string; polished: string }> => {
     try {
       const headers = await api.getAuthHeaders();
       const response = await fetch(endpoints.cases.polishSummary, {
@@ -281,6 +288,103 @@ export const api = {
       }
     } catch (error) {
       console.error('Failed to delete project:', error);
+      throw error;
+    }
+  },
+
+  // Record Files Management
+  getRecordFiles: async (projectId: string) => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(endpoints.cases.recordFiles(projectId), {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to fetch record files:', error);
+      throw error;
+    }
+  },
+
+  createRecordFile: async (projectId: string, data: any) => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(endpoints.cases.recordFiles(projectId), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to create record file:', error);
+      throw error;
+    }
+  },
+
+  updateRecordFile: async (recordFileId: string, data: any) => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(`${endpoints.recordFiles.base}/${recordFileId}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to update record file:', error);
+      throw error;
+    }
+  },
+
+  deleteRecordFile: async (recordFileId: string) => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(`${endpoints.recordFiles.base}/${recordFileId}`, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Failed to delete record file:', error);
+      throw error;
+    }
+  },
+
+  // AI KYC Report
+  generateKYCReport: async (projectId: string) => {
+    try {
+      const headers = await api.getAuthHeaders();
+      const response = await fetch(endpoints.cases.kycReport(projectId), {
+        method: 'POST',
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to generate KYC report:', error);
       throw error;
     }
   },

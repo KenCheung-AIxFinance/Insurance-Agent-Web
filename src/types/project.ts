@@ -44,3 +44,20 @@ export type Tag = {
     name: string;
     createdAt?: string;
 };
+
+export enum RecordFileType {
+    INSURANCE_NEEDS = 'INSURANCE_NEEDS',
+    RETIREMENT_BUDGET = 'RETIREMENT_BUDGET',
+    MEDICAL_EXPENSE = 'MEDICAL_EXPENSE',
+}
+
+export type RecordFile = {
+    id: string;
+    project_id: string;
+    type: RecordFileType;
+    name: string;
+    data: any;
+    raw_text?: string;
+    created_at: string;
+    updated_at: string;
+};

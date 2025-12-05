@@ -9,6 +9,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 const Overview = lazy(() => import('./pages/Home'));
 const Projects = lazy(() => import('./pages/Projects'));
+const ProjectDetail = lazy(() => import('./pages/Projects/Detail'));
 const KnowledgeBaseList = lazy(() => import('./pages/KnowledgeBase/List'));
 const KnowledgeBaseForm = lazy(() => import('./pages/KnowledgeBase/Form'));
 const KnowledgeBaseDetail = lazy(() => import('./pages/KnowledgeBase/Detail'));
@@ -93,6 +94,13 @@ export default function App() {
               <ProtectedRoute>
                 <PageWrapper>
                   <Overview />
+                </PageWrapper>
+              </ProtectedRoute>
+            } />
+            <Route path="/projects/:id" element={
+              <ProtectedRoute>
+                <PageWrapper>
+                  <ProjectDetail />
                 </PageWrapper>
               </ProtectedRoute>
             } />
