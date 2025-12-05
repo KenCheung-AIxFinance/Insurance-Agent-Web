@@ -19,8 +19,49 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
 
     const fetchRecordFiles = async () => {
         try {
-            const data = await api.getRecordFiles(projectId);
-            setRecordFiles(data);
+            // const data = await api.getRecordFiles(projectId);
+            const dummyRecordFiles: RecordFile[] = [
+                {
+                    id: '1',
+                    project_id: projectId,
+                    type: RecordFileType.INSURANCE_NEEDS,
+                    name: 'June 2022',
+                    data: {
+                        income: 10000,
+                        expenses: 5000,
+                    },
+                    raw_text: 'Dummy bank statement raw text',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                },
+                {
+                    id: '2',
+                    project_id: projectId,
+                    type: RecordFileType.RETIREMENT_BUDGET,
+                    name: '2022',
+                    data: {
+                        deduction: 5000,
+                        tax: 1000,
+                    },
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+                },
+                {
+                    id: '3',
+                    project_id: projectId,
+                    type: RecordFileType.MEDICAL_EXPENSE,
+                    name: 'June 2022',
+                    data: {
+                        medical_bills: 10000,
+                        prescription_cost: 3000,
+                    },
+                    raw_text: 'Dummy medical statement raw text',
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
+
+                }
+            ]
+            setRecordFiles(dummyRecordFiles);
         } catch (error) {
             console.error('Failed to fetch record files:', error);
         } finally {
