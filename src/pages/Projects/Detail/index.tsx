@@ -119,7 +119,7 @@ const ProjectDetail: React.FC = () => {
 
     if (!project) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
+            <div className="fixed right-0 top-0 h-screen w-96 bg-white shadow-xl z-40 transform transition-transform duration-300 ease-in-out flex flex-col" style={{ marginTop: '64px' }}>
                 <AlertCircle className="h-12 w-12 text-gray-400 mb-4" />
                 <h2 className="text-xl font-semibold text-gray-900 mb-2">找不到專案</h2>
                 <p className="text-gray-500 mb-6">請確認專案ID是否正確，或返回專案列表</p>
@@ -165,7 +165,7 @@ const ProjectDetail: React.FC = () => {
             </header>
 
             {/* 頁面內容 */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="max-w-7xl mx-auto py-6">
                 {/* 客戶資訊卡片 */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
                     <div className="lg:col-span-8 space-y-6">

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import * as Dialog from '@radix-ui/react-dialog';
 import { X, ExternalLink, Save, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/general/ui/button';
 import { Loader } from '@/components/general/ui/loader';
+import { cn } from '@/lib/utils';
 import { RecordFile, RecordFileType } from '@/types/project';
 import { api } from '@/config/api';
 
@@ -91,33 +92,31 @@ const RecordFileDrawer: React.FC<RecordFileDrawerProps> = ({ isOpen, onClose, re
     if (!isOpen || !recordFile) return null;
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 0.5 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black z-40"
-                    />
-                    <motion.div
-                        initial={{ x: '100%' }}
-                        animate={{ x: 0 }}
-                        exit={{ x: '100%' }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed right-0 top-0 h-full w-full max-w-2xl bg-white shadow-2xl z-50 flex flex-col"
-                    >
-                        {/* Header */}
-                        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-                            <h2 className="text-xl font-semibold text-gray-900">{recordFile.name}</h2>
-                            <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
+        <Dialog.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 bg-black/50 z-40 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+                <Dialog.Content 
+                    className={cn(
+                        "fixed right-0 top-0 h-screen w-full max-w-2xl bg-white shadow-2xl z-50 flex flex-col",
+                        "data-[state=open]:animate-in data-[state=closed]:animate-out",
+                        "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+                        "data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-right-full",
+                        "duration-300 ease-in-out"
+                    )}
+                >
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+                        <Dialog.Title className="text-xl font-semibold text-gray-900">
+                            {recordFile.name}
+                        </Dialog.Title>
+                        <Dialog.Close asChild>
+                            <button className="text-gray-400 hover:text-gray-500 focus:outline-none">
                                 <X className="w-6 h-6" />
+                                <span className="sr-only">關閉</span>
                             </button>
-                        </div>
+                        </Dialog.Close>
+                    </div>
 
-                        {/* Content */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-8">
                             {/* External Calculator Link */}
                             <div className="bg-blue-50 p-4 rounded-lg flex items-center justify-between">
                                 <div>
@@ -225,11 +224,10 @@ const RecordFileDrawer: React.FC<RecordFileDrawerProps> = ({ isOpen, onClose, re
                                 {isSaving ? <Loader className="text-white" /> : <Save className="w-4 h-4 mr-2" />}
                                 儲存記錄
                             </Button>
-                        </div>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
+                    </div>
+                </Dialog.Content>
+            </Dialog.Portal>
+        </Dialog.Root>
     );
 };
 
