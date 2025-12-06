@@ -56,6 +56,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    console.log("Render ProtectedRoute")
+  }, [])
+
+
   if (authState.isAuthenticated === null) {
     return <div className="flex items-center justify-center h-screen"><Loader label="載入中..." /></div>;
   }
@@ -97,6 +102,7 @@ export default function App() {
                 </PageWrapper>
               </ProtectedRoute>
             } />
+            {/* 項目詳情頁使用獨立的 ProjectLayout 佈局，不需要 PageWrapper */}
             <Route path="/projects/:id" element={
               <ProtectedRoute>
                 <PageWrapper>
