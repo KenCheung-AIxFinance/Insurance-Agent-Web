@@ -1,5 +1,6 @@
 import { Card } from '@/components/general/ui/card';
 import { Pin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Case } from '@/types/project';
 import { StatusBadge } from './StatusBadge';
 
@@ -9,7 +10,7 @@ type ProjectListItemProps = {
 
 export const ProjectListItem = ({ project }: ProjectListItemProps) => (
   <Card className="group">
-    <a href={`/projects/${project.case_id}`} className="block">
+    <Link to={`/projects/${project.case_id}`} className="block">
       <div className="p-4 relative">
         {project.pinned && (
           <div className="absolute top-2 right-2">
@@ -48,6 +49,6 @@ export const ProjectListItem = ({ project }: ProjectListItemProps) => (
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   </Card>
 );

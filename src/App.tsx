@@ -4,8 +4,7 @@ import Layout from './components/Layout';
 import { Suspense, lazy, useState, useEffect } from 'react';
 import { Button } from '@/components/general/ui/button';
 import { Loader } from '@/components/general/ui/loader';
-import { auth } from './firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useAuth } from './contexts/AuthContext';
 
 const Overview = lazy(() => import('./pages/Home'));
 const Projects = lazy(() => import('./pages/Projects'));
@@ -33,48 +32,24 @@ const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 );
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [authState, setAuthState] = useState<{
-    isAuthenticated: boolean | null;
-    needsProfileSetup: boolean;
-  }>({ isAuthenticated: null, needsProfileSetup: false });
+  const { isAuthenticated, loading, needsProfileSetup } = useAuth();
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log('Auth state changed:', user);
-      if (user) {
-        setAuthState({
-          isAuthenticated: true,
-          needsProfileSetup: !user.displayName,
-        });
-      } else {
-        setAuthState({
-          isAuthenticated: false,
-          needsProfileSetup: false,
-        });
-      }
-    });
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    console.log("Render ProtectedRoute")
-  }, [])
-
-
-  if (authState.isAuthenticated === null) {
+  if (loading) {
     return <div className="flex items-center justify-center h-screen"><Loader label="載入中..." /></div>;
   }
 
-  if (!authState.isAuthenticated) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
-  if (authState.needsProfileSetup && window.location.pathname !== '/profile-setup') {
+  if (needsProfileSetup && window.location.pathname !== '/profile-setup') {
     return <Navigate to="/profile-setup" />;
   }
 
   return <>{children}</>;
 };
+
+
 
 export default function App() {
   const location = useLocation();

@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/general/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Pin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Case } from '@/types/project';
 import { StatusBadge } from './StatusBadge';
 
@@ -10,7 +11,7 @@ type ProjectCardProps = {
 
 export const ProjectCard = ({ project }: ProjectCardProps) => (
   <Card className="h-full flex flex-col hover:shadow-md transition-shadow group">
-    <a href={`/projects/${project.case_id}`} className="flex-1 flex flex-col">
+    <Link to={`/projects/${project.case_id}`} className="flex-1 flex flex-col">
       <CardHeader className="p-4 pb-2">
         <div className="flex justify-between items-start gap-2">
           <CardTitle className="text-lg line-clamp-1">
@@ -67,6 +68,6 @@ export const ProjectCard = ({ project }: ProjectCardProps) => (
           </div>
         </div>
       </CardContent>
-    </a>
+    </Link>
   </Card>
 );
