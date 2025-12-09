@@ -1,8 +1,24 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Zap, FileText, Database } from 'lucide-react';
+import { Zap, FileText, Database, TrendingUp } from 'lucide-react';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
-// Mock Data
+// Mock Data Generation
+const generateMockData = () => {
+    const data = [];
+    const today = new Date();
+    for (let i = 30; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(date.getDate() - i);
+        data.push({
+            date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            tokens: Math.floor(Math.random() * 2000) + 1000 + (Math.sin(i / 3) * 500), // Random wave-like data
+            documents: Math.floor(Math.random() * 5) + 1,
+        });
+    }
+    return data;
+};
+
 const usageData = {
     tokensUsed: 125000,
     tokensLimit: 500000,
@@ -11,6 +27,8 @@ const usageData = {
     storageUsed: '1.2 GB',
     storageLimit: '5 GB'
 };
+
+const chartData = generateMockData();
 
 const UsageStats: React.FC = () => {
     return (
@@ -81,15 +99,68 @@ const UsageStats: React.FC = () => {
                 </Card>
             </div>
 
-            <Card className="col-span-4">
+            <Card className="col-span-4 overflow-hidden">
                 <CardHeader>
-                    <CardTitle>近期消耗趨勢</CardTitle>
-                    <CardDescription>
-                        過去 7 天的 Token 消耗情況 (模擬數據)
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <CardTitle>近期消耗趨勢</CardTitle>
+                            <CardDescription>
+                                過去 30 天的 Token 消耗情況
+                            </CardDescription>
+                        </div>
+                        <div className="flex items-center text-sm font-medium text-green-500 bg-green-50 px-3 py-1 rounded-full">
+                            <TrendingUp className="w-4 h-4 mr-1" />
+                            +12.5% vs 上月
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardContent className="h-[200px] flex items-center justify-center border-2 border-dashed border-slate-100 rounded-md m-4 text-slate-400">
-                    此處可整合 Recharts 圖表顯示每日消耗
+                <CardContent className="pl-0">
+                    <div className="h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                <defs>
+                                    <linearGradient id="colorTokens" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                                        <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <XAxis
+                                    dataKey="date"
+                                    stroke="#888888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    minTickGap={30}
+                                />
+                                <YAxis
+                                    stroke="#888888"
+                                    fontSize={12}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={(value) => `${value}`}
+                                />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
+                                    }}
+                                    itemStyle={{ color: '#8884d8', fontWeight: 600 }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="tokens"
+                                    stroke="#8884d8"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#colorTokens)"
+                                    animationDuration={1500}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
                 </CardContent>
             </Card>
         </div>
