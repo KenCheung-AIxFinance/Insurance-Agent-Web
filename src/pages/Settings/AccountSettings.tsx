@@ -6,7 +6,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-// ... existing imports ...
+import { auth } from '@/firebase';
+import getCroppedImg from '@/lib/cropImage';
+import { toast } from 'sonner';
+import { Camera, Loader2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Slider } from '@/components/ui/slider';
+import Cropper from 'react-easy-crop';
 
 const AccountSettings: React.FC = () => {
     const { user } = useAuth();
@@ -73,7 +79,21 @@ const AccountSettings: React.FC = () => {
     };
 
     const handleUpdateProfile = async (e: React.FormEvent) => {
-        // ... existing implementation ...
+        e.preventDefault();
+        if (!auth.currentUser) return;
+
+        setLoading(true);
+        try {
+            await updateProfile(auth.currentUser, {
+                displayName: displayName
+            });
+            toast.success('個人資料已更新');
+        } catch (error) {
+            console.error(error);
+            toast.error('更新失敗');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handlePasswordChange = async (e: React.FormEvent) => {

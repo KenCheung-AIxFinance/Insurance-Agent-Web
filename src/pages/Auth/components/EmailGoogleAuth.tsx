@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { auth } from '../../firebase';
+import { auth } from '@/firebase';
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,10 +7,10 @@ import {
   signInWithPopup,
   sendEmailVerification,
 } from 'firebase/auth';
-import { Input } from '../general/ui/input';
-import { Button } from '../general/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../general/ui/card';
-import { Label } from '../general/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
 
 interface EmailGoogleAuthProps {
   onLoginSuccess: () => void;
@@ -208,6 +208,17 @@ const EmailGoogleAuth: React.FC<EmailGoogleAuthProps> = ({ onLoginSuccess }) => 
                 required
               />
             </div>
+
+            {!isRegistering && (
+              <div className="text-right">
+                <a
+                  href="/forgot-password"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  忘記密碼？
+                </a>
+              </div>
+            )}
 
             <Button
               onClick={handleEmailPasswordAuth}

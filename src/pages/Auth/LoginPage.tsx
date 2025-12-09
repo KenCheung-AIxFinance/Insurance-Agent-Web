@@ -1,5 +1,5 @@
 import React from 'react';
-import EmailGoogleAuth from '../../components/auth/EmailGoogleAuth';
+import EmailGoogleAuth from './components/EmailGoogleAuth';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {

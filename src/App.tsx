@@ -18,6 +18,7 @@ const Tutorials = lazy(() => import('./pages/Tutorials'));
 const TutorialDetail = lazy(() => import('./pages/Tutorials/Detail'));
 const LoginPage = lazy(() => import('./pages/Auth/LoginPage'));
 const ProfileSetup = lazy(() => import('./pages/Auth/ProfileSetup'));
+const ForgotPassword = lazy(() => import('./pages/Auth/ForgotPassword'));
 const Settings = lazy(() => import('./pages/Settings'));
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -60,6 +61,7 @@ export default function App() {
       <AnimatePresence mode="wait">
         <Suspense fallback={<div className="p-4"><Loader label="載入中..." /></div>}>
           <Routes location={location} key={location.pathname}>
+            <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/profile-setup" element={
               <ProtectedRoute>
