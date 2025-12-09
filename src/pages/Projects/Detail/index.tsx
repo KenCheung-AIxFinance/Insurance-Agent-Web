@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { api } from '@/config/api';
 import { Case } from '@/types/project';
-import { Button } from '@/components/general/ui/button';
+import { Button } from '@/components/ui/button';
+import { Loader } from '@/components/ui/loader';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 
 // Modules
@@ -74,7 +75,7 @@ const ProjectDetail: React.FC = () => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-gray-50">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                <Loader label="載入中..." />
             </div>
         );
     }
@@ -107,32 +108,32 @@ const ProjectDetail: React.FC = () => {
                 <div className="space-y-8">
                     <SectionContainer
                         id="kyc"
-                        title="KYC & Needs Analysis"
-                        subtitle="Customer profile, risk assessment, and requirements"
+                        title="客戶需求分析"
+                        subtitle="深入了解客戶背景與風險偏好"
                     >
                         <KYCModule projectId={project.case_id} />
                     </SectionContainer>
 
                     <SectionContainer
                         id="products"
-                        title="Product Recommendations"
-                        subtitle="Tailored insurance solutions"
+                        title="專屬方案建議"
+                        subtitle="基於分析結果的個性化保險組合"
                     >
                         <ProductRecommendationModule projectId={project.case_id} />
                     </SectionContainer>
 
                     <SectionContainer
                         id="postsales"
-                        title="Post-Sales & Processing"
-                        subtitle="Applications and policy management"
+                        title="投保與售後跟進"
+                        subtitle="文件簽署、核保進度與保單管理"
                     >
                         <PostSalesModule projectId={project.case_id} />
                     </SectionContainer>
 
                     <SectionContainer
                         id="faq"
-                        title="Common Questions"
-                        subtitle="AI-generated FAQ for this case"
+                        title="智能問答助手"
+                        subtitle="針對本案的 AI 輔助諮詢"
                     >
                         <FAQModule projectId={project.case_id} />
                     </SectionContainer>

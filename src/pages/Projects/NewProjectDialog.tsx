@@ -10,11 +10,11 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/general/ui/button';
-import { Input } from '@/components/general/ui/input';
-import { Textarea } from '@/components/general/ui/textarea';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { TagSelector } from '@/components/general/TagSelector';
+import { TagSelector } from '@/components/shared/TagSelector';
 import { ProjectService } from '@/services/projectService';
 import { TagService } from '@/services/tagService';
 import { AIService } from '@/services/aiService';

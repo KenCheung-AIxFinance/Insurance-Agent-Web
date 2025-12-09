@@ -8,8 +8,9 @@ import {
     ArrowLeft,
     MoreHorizontal
 } from 'lucide-react';
-import { Button } from '@/components/general/ui/button';
+import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { StatusBadge } from '@/pages/Projects/components/StatusBadge';
 
 interface HeroSectionProps {
     project: Case;
@@ -40,7 +41,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ project }) => {
                         className="group text-gray-600 hover:text-gray-900 hover:bg-white/50 transition-all duration-300 rounded-full px-4"
                     >
                         <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-medium">Back to Projects</span>
+                        <span className="font-medium">返回項目列表</span>
                     </Button>
 
                     <Button
@@ -57,14 +58,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ project }) => {
 
                     <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
-                            <span className={`
-                px-3 py-1 rounded-full text-xs font-bold tracking-wide uppercase
-                ${project.status === 'completed' ? 'bg-emerald-100/80 text-emerald-700' :
-                                    project.status === 'in_progress' ? 'bg-indigo-100/80 text-indigo-700' :
-                                        'bg-amber-100/80 text-amber-700'}
-              `}>
-                                {project.status === 'in_progress' ? 'Active Case' : project.status}
-                            </span>
+                            <StatusBadge status={project.status} className="px-3 py-1 text-xs" />
                             <span className="text-gray-400 text-sm font-medium tracking-wider">#{project.case_id.slice(0, 8)}</span>
                         </div>
 
@@ -73,15 +67,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ project }) => {
                         </h1>
 
                         <p className="text-lg text-gray-600 font-medium max-w-2xl leading-relaxed">
-                            {project.title || 'Comprehensive Insurance Planning'}
+                            {project.title || '全方位保險規劃方案'}
                         </p>
                     </div>
 
                     {/* Metrics Grid */}
-                    <div className="flex gap-4 md:gap-8 bg-white/40 rounded-2xl p-4 border border-white/50 shadow-sm">
+                    <div className="flex gap-4 md:gap-8">
                         <div className="flex flex-col items-center justify-center p-2 min-w-[80px]">
                             <Calendar className="w-5 h-5 text-indigo-500 mb-2" />
-                            <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Created</div>
+                            <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">建立日期</div>
                             <div className="text-sm font-bold text-gray-800 mt-1">
                                 {new Date(project.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                             </div>
@@ -91,7 +85,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ project }) => {
 
                         <div className="flex flex-col items-center justify-center p-2 min-w-[80px]">
                             <Clock className="w-5 h-5 text-purple-500 mb-2" />
-                            <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Updated</div>
+                            <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">更新日期</div>
                             <div className="text-sm font-bold text-gray-800 mt-1">
                                 {new Date(project.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                             </div>
@@ -102,7 +96,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ project }) => {
                                 <div className="w-px bg-gray-300/50 h-10 self-center" />
                                 <div className="flex flex-col items-center justify-center p-2 min-w-[80px]">
                                     <Tag className="w-5 h-5 text-emerald-500 mb-2" />
-                                    <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">Tags</div>
+                                    <div className="text-xs text-gray-500 font-medium uppercase tracking-wide">標籤</div>
                                     <div className="text-sm font-bold text-gray-800 mt-1">{project.tags.length}</div>
                                 </div>
                             </>

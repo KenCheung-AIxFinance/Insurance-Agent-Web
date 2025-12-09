@@ -7,13 +7,13 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from "@/components/general/ui/card";
-import { Button } from "@/components/general/ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessagesSquare, FolderOpen, FileText } from "lucide-react";
 
 import { mockHistory } from "@/mocks/chat";
-import { Empty } from "@/components/general/ui/empty";
+import { Empty } from "@/components/ui/empty";
 import { FaWandMagicSparkles } from "react-icons/fa6";
 
 // 本地存儲相關的 key

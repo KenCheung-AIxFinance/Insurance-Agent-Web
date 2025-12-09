@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/general/ui/button';
-import { Plus, Loader2, FileText, Clock, CheckCircle, Archive } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Plus, FileText, Clock, CheckCircle, Archive } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
 import { NewProjectDialog } from './NewProjectDialog';
 import { ProjectService } from '@/services/projectService';
 import { toast } from 'sonner';
@@ -67,11 +68,11 @@ const ProjectsPage = () => {
       if (!project) return;
 
       project.pinned = pinned;
-      
+
       await ProjectService.updateProject(projectId, project);
-      
+
       // Update local state to reflect the change immediately
-      setProjects(projects.map(project => 
+      setProjects(projects.map(project =>
         project.case_id === projectId ? { ...project, pinned } : project
       ));
     } catch (error) {
@@ -93,7 +94,7 @@ const ProjectsPage = () => {
           (project.tags || []).some((tag: string) => tag.toLowerCase().includes(searchLower))
         );
       })
-      .filter((project: Case) => 
+      .filter((project: Case) =>
         activeTab === 'all' || project.status === activeTab
       )
       .sort((a: Case, b: Case) => {
@@ -101,7 +102,7 @@ const ProjectsPage = () => {
         if (a.pinned !== b.pinned) {
           return a.pinned ? -1 : 1;
         }
-        
+
         let comparison = 0;
         // Handle different sort fields
         if (sortBy.field === 'title' || sortBy.field === 'client_name') {
@@ -113,7 +114,7 @@ const ProjectsPage = () => {
           const bDate = new Date(b[sortBy.field] || 0).getTime();
           comparison = aDate - bDate;
         }
-        
+
         // Apply sort order
         return sortBy.order === 'asc' ? comparison : -comparison;
       });
@@ -149,7 +150,7 @@ const ProjectsPage = () => {
 
   const handleUpdateProject = async (data: CreateCaseInput) => {
     if (!editingProject) return;
-    
+
     try {
       await ProjectService.updateProject(editingProject.case_id, data);
       toast.success('項目已更新');
@@ -188,14 +189,14 @@ const ProjectsPage = () => {
       />
 
       {isLoading ? (
-        <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin" />
+        <div className="flex justify-center items-center h-screen">
+          <Loader label="載入中..." />
         </div>
       ) : error ? (
         <div className="text-center py-12">
           <p className="text-destructive">{error}</p>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             className="mt-4"
             onClick={fetchProjects}
           >
@@ -205,7 +206,7 @@ const ProjectsPage = () => {
       ) : sortedAndFilteredProjects.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-muted-foreground">尚未建立任何項目</p>
-          <Button 
+          <Button
             className="mt-4"
             onClick={() => setIsDialogOpen(true)}
           >

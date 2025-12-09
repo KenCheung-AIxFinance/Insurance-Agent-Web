@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase';
 import { updateProfile, User } from 'firebase/auth';
-import { Button } from '@/components/general/ui/button';
-import { Input } from '@/components/general/ui/input';
-import { Label } from '@/components/general/ui/label';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/general/ui/card';
-import { Loader } from '@/components/general/ui/loader';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { endpoints } from '@/config/api';
 
 const ProfileSetup: React.FC = () => {
@@ -95,7 +94,6 @@ const ProfileSetup: React.FC = () => {
                                 className="w-full h-11 font-medium shadow-sm"
                                 disabled={loading || !displayName.trim()}
                             >
-                                {loading ? <Loader className="mr-2 h-4 w-4 animate-spin" /> : null}
                                 {loading ? '儲存中...' : '完成設定'}
                             </Button>
 

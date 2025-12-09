@@ -4,11 +4,11 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-} from "@/components/general/ui/card";
-import { Button } from "@/components/general/ui/button";
-import { Loader } from "@/components/general/ui/loader";
-import { Textarea } from "@/components/general/ui/textarea";
-import { Input } from "@/components/general/ui/input";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loader } from "@/components/ui/loader";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FileUpload } from "@/components/general/ui/file-upload";
+import { FileUpload } from "@/components/ui/file-upload";
 import {
   Dialog,
   DialogContent,
@@ -29,11 +29,11 @@ import {
 import { api } from "@/config/api";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import AiMessageDisplay from "@/components/ai/AiMessageDisplay";
+import AiMessageDisplay from "@/components/shared/ai/AiMessageDisplay";
 import remarkParse from "remark-parse";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { FaRegCopy, FaCheck, FaDownload, FaEye } from "react-icons/fa";
-import MessageItem from "@/components/ai/MessageItem";
+import MessageItem from "@/components/shared/ai/MessageItem";
 
 interface Message {
   id: string;

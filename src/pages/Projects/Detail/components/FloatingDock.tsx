@@ -15,10 +15,10 @@ interface FloatingDockProps {
 }
 
 const navItems = [
-    { id: 'kyc', label: 'KYC', icon: FileText, color: 'text-blue-500' },
-    { id: 'products', label: 'Products', icon: ShoppingBag, color: 'text-purple-500' },
-    { id: 'postsales', label: 'Post-Sales', icon: CheckCircle, color: 'text-emerald-500' },
-    { id: 'faq', label: 'FAQ', icon: HelpCircle, color: 'text-amber-500' },
+    { id: 'kyc', label: '需求分析', icon: FileText, color: 'text-blue-500' },
+    { id: 'products', label: '方案建議', icon: ShoppingBag, color: 'text-purple-500' },
+    { id: 'postsales', label: '投保跟進', icon: CheckCircle, color: 'text-emerald-500' },
+    { id: 'faq', label: '智能問答', icon: HelpCircle, color: 'text-amber-500' },
 ];
 
 const FloatingDock: React.FC<FloatingDockProps> = ({ activeSection, onNavigate }) => {

@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Card } from '@/components/general/ui/card';
-import { Button } from '@/components/general/ui/button';
-import { Textarea } from '@/components/general/ui/textarea';
-import { Loader } from '@/components/general/ui/loader';
-import { MultiSelect, Option } from "@/components/general/ui/multi-select";
+import { Card } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Loader } from '@/components/ui/loader';
+import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { mockHistory } from '../../mocks/chat';
 import { mockKnowledgeBases } from '../../mocks/knowledgeBases';
 

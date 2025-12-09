@@ -1,4 +1,4 @@
-import { Card } from '@/components/general/ui/card';
+import { Card } from '@/components/ui/card';
 import { Pin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Case } from '@/types/project';

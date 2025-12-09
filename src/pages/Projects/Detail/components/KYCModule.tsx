@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, FileText, Sparkles } from 'lucide-react';
-import { Button } from '@/components/general/ui/button';
+import { Button } from '@/components/ui/button';
 import { api } from '@/config/api';
 import { RecordFile, RecordFileType } from '@/types/project';
 import RecordFileDrawer from './RecordFileDrawer';
-import { Loader } from '@/components/general/ui/loader';
+import { Loader } from '@/components/ui/loader';
 
 interface KYCModuleProps {
     projectId: string;
@@ -118,10 +118,10 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
         try {
             await api.generateKYCReport(projectId);
             // In a real app, we might poll for status or show a success message
-            alert('KYC 報告生成請求已發送');
+            alert('分析報告生成請求已發送');
         } catch (error) {
             console.error('Failed to generate report:', error);
-            alert('生成報告失敗 (後端接口可能尚未就緒)');
+            alert('生成報告失敗 (後端服務可能尚未就緒)');
         } finally {
             setGeneratingReport(false);
         }
@@ -132,7 +132,7 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
     };
 
     if (loading) {
-        return <div className="py-8"><Loader label="載入記錄檔案..." /></div>;
+        return <div className="py-8"><Loader label="正在讀取分析檔案..." /></div>;
     }
 
     return (
@@ -140,8 +140,8 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
             {/* Header Section */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-medium text-gray-900">客戶畫像 & 偏好需求 (KYC)</h2>
-                    <p className="text-sm text-gray-500 mt-1">管理客戶的各類評估記錄與需求分析</p>
+                    <h2 className="text-lg font-medium text-gray-900">檔案管理與分析</h2>
+                    <p className="text-sm text-gray-500 mt-1">集中管理所有財務與風險評估文件及分析報告</p>
                 </div>
                 <Button
                     onClick={handleGenerateReport}
@@ -149,7 +149,7 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                 >
                     {generatingReport ? <Loader className="text-white" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                    生成 KYC 報告
+                    生成智能分析報告
                 </Button>
             </div>
 
@@ -163,18 +163,18 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
                         </div>
                         {recordFiles.find(f => f.type === RecordFileType.INSURANCE_NEEDS) && (
                             <span className="px-2 py-1 bg-green-50 text-green-700 text-xs font-medium rounded-full">
-                                已建立
+                                已完成
                             </span>
                         )}
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">保險需求評估</h3>
-                    <p className="text-sm text-gray-500 mb-4">評估身故保障缺口、家庭債務與財政資源。</p>
+                    <h3 className="font-medium text-gray-900 mb-2">保障缺口分析</h3>
+                    <p className="text-sm text-gray-500 mb-4">分析家庭責任、債務狀況及現有保障缺口。</p>
                     <Button
                         variant="outline"
                         className="w-full"
                         onClick={() => handleCreateFile(RecordFileType.INSURANCE_NEEDS)}
                     >
-                        {recordFiles.find(f => f.type === RecordFileType.INSURANCE_NEEDS) ? '查看詳情' : '新增評估'}
+                        {recordFiles.find(f => f.type === RecordFileType.INSURANCE_NEEDS) ? '查看詳情' : '新增分析'}
                     </Button>
                 </div>
 
@@ -185,10 +185,10 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
                             <FileText className="w-6 h-6 text-orange-600" />
                         </div>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">退休金預算 (即將推出)</h3>
+                    <h3 className="font-medium text-gray-900 mb-2">退休生活規劃</h3>
                     <p className="text-sm text-gray-500 mb-4">規劃退休生活開支與儲蓄目標。</p>
                     <Button variant="outline" className="w-full" disabled>
-                        即將推出
+                        即將開啟
                     </Button>
                 </div>
 
@@ -199,10 +199,10 @@ const KYCModule: React.FC<KYCModuleProps> = ({ projectId }) => {
                             <FileText className="w-6 h-6 text-red-600" />
                         </div>
                     </div>
-                    <h3 className="font-medium text-gray-900 mb-2">醫療費用預測 (即將推出)</h3>
+                    <h3 className="font-medium text-gray-900 mb-2">醫療儲備分析</h3>
                     <p className="text-sm text-gray-500 mb-4">預估未來醫療開支與保險覆蓋。</p>
                     <Button variant="outline" className="w-full" disabled>
-                        即將推出
+                        即將開啟
                     </Button>
                 </div>
             </div>

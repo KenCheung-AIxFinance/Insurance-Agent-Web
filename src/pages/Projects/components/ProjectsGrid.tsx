@@ -1,6 +1,6 @@
 import { Case } from '@/types/project';
 import { ProjectCard } from './ProjectCard';
-import { ProjectContextMenu } from '@/components/project/ProjectContextMenu';
+import { ProjectContextMenu } from '@/pages/Projects/components/ProjectContextMenu';
 
 type ProjectsGridProps = {
   projects: Case[];

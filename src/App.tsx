@@ -1,9 +1,9 @@
 import { useLocation, Link, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import Layout from './components/Layout';
+import Layout from './layouts/RootLayout';
 import { Suspense, lazy, useState, useEffect } from 'react';
-import { Button } from '@/components/general/ui/button';
-import { Loader } from '@/components/general/ui/loader';
+import { Button } from '@/components/ui/button';
+import { Loader } from '@/components/ui/loader';
 import { useAuth } from './contexts/AuthContext';
 
 const Overview = lazy(() => import('./pages/Home'));
@@ -18,6 +18,7 @@ const Tutorials = lazy(() => import('./pages/Tutorials'));
 const TutorialDetail = lazy(() => import('./pages/Tutorials/Detail'));
 const LoginPage = lazy(() => import('./pages/Auth/LoginPage'));
 const ProfileSetup = lazy(() => import('./pages/Auth/ProfileSetup'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 const PageWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <motion.div
@@ -64,6 +65,13 @@ export default function App() {
               <ProtectedRoute>
                 <PageWrapper>
                   <ProfileSetup />
+                </PageWrapper>
+              </ProtectedRoute>
+            } />
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <PageWrapper>
+                  <Settings />
                 </PageWrapper>
               </ProtectedRoute>
             } />

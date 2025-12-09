@@ -7,15 +7,15 @@ interface PostSalesModuleProps {
 
 const PostSalesModule: React.FC<PostSalesModuleProps> = ({ projectId }) => {
     const steps = [
-        { title: '信息收集', status: 'pending' },
-        { title: '材料列表', status: 'pending' },
-        { title: '銀行開戶', status: 'pending' },
-        { title: '簽署', status: 'pending' },
+        { title: '投保資料收集', status: 'pending' },
+        { title: '文件清單核對', status: 'pending' },
+        { title: '銀行與繳費設定', status: 'pending' },
+        { title: '保單簽署與遞交', status: 'pending' },
     ];
 
     return (
         <div className="bg-white rounded-xl border border-gray-200 p-8">
-            <h3 className="text-lg font-medium text-gray-900 mb-6">投保 & 售後流程</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-6">投保進度追蹤</h3>
             <div className="space-y-8">
                 {steps.map((step, index) => (
                     <div key={index} className="flex items-center">

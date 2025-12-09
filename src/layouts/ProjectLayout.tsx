@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import React from 'react';
-import { Button } from '@/components/general/ui/button';
+import { Button } from '@/components/ui/button';
 import { 
   ArrowLeft, 
   Settings, 

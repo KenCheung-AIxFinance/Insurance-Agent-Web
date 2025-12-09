@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X, ExternalLink, Save, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/general/ui/button';
-import { Loader } from '@/components/general/ui/loader';
+import { Button } from '@/components/ui/button';
+import { Loader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
 import { RecordFile, RecordFileType } from '@/types/project';
 import { api } from '@/config/api';

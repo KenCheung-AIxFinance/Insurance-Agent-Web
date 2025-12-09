@@ -5,8 +5,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/general/ui/card";
-import { Button } from "@/components/general/ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default function KnowledgeBaseList() {
   return (

@@ -1,6 +1,6 @@
 import { Case } from '@/types/project';
 import { ProjectListItem } from './ProjectListItem';
-import { ProjectContextMenu } from '@/components/project/ProjectContextMenu';
+import { ProjectContextMenu } from '@/pages/Projects/components/ProjectContextMenu';
 
 type ProjectsListProps = {
   projects: Case[];
