@@ -135,7 +135,7 @@ const ProjectDetail: React.FC = () => {
                         title="智能問答助手"
                         subtitle="針對本案的 AI 輔助諮詢"
                     >
-                        <FAQModule projectId={project.case_id} />
+                        <FAQModule projectId={project.case_id} project={project} />
                     </SectionContainer>
                 </div>
             </div>

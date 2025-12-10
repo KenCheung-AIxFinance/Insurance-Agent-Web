@@ -12,7 +12,7 @@ const ProjectDetail = lazy(() => import('./pages/Projects/Detail'));
 const KnowledgeBaseList = lazy(() => import('./pages/KnowledgeBase/List'));
 const KnowledgeBaseForm = lazy(() => import('./pages/KnowledgeBase/Form'));
 const KnowledgeBaseDetail = lazy(() => import('./pages/KnowledgeBase/Detail'));
-const ChatAssistant = lazy(() => import('./pages/Chat/ChatAssistant'));
+const ChatAssistant = lazy(() => import('./pages/Chat'));
 const IntelligentCreation = lazy(() => import('./pages/IntelligentCreation/DocumentCreator'));
 const Tutorials = lazy(() => import('./pages/Tutorials'));
 const TutorialDetail = lazy(() => import('./pages/Tutorials/Detail'));
@@ -105,7 +105,7 @@ export default function App() {
             <Route path="/knowledge-base" element={<ProtectedRoute><PageWrapper><KnowledgeBaseList /></PageWrapper></ProtectedRoute>} />
             <Route path="/knowledge-base/new" element={<ProtectedRoute><PageWrapper><KnowledgeBaseForm /></PageWrapper></ProtectedRoute>} />
             <Route path="/knowledge-base/:id" element={<ProtectedRoute><PageWrapper><KnowledgeBaseDetail /></PageWrapper></ProtectedRoute>} />
-            <Route path="/chat" element={<ProtectedRoute><PageWrapper><ChatAssistant /></PageWrapper></ProtectedRoute>} />
+            <Route path="/chat" element={<ProtectedRoute><ChatAssistant /></ProtectedRoute>} />
             <Route path="/intelligent-creation" element={<ProtectedRoute><PageWrapper><IntelligentCreation /></PageWrapper></ProtectedRoute>} />
             <Route path="/tutorials" element={<ProtectedRoute><PageWrapper><Tutorials /></PageWrapper></ProtectedRoute>} />
             <Route path="/tutorials/:id" element={<ProtectedRoute><PageWrapper><TutorialDetail /></PageWrapper></ProtectedRoute>} />
