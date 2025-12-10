@@ -18,14 +18,14 @@ const ChatPage: React.FC = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const data = await api.getProjects();
+                const data = await api.getMyProjects();
                 setProjects(data);
 
                 // Check if there's a project in URL params
                 const projectParam = searchParams.get('project');
                 if (projectParam) {
                     setSelectedProjectId(projectParam);
-                    const project = data.find(p => p.case_id === projectParam);
+                    const project = data.find((p: Case) => p.case_id === projectParam);
                     setSelectedProject(project || null);
                 }
             } catch (error) {

@@ -50,6 +50,17 @@ export enum RecordFileType {
     RETIREMENT_BUDGET = 'RETIREMENT_BUDGET',
     MEDICAL_EXPENSE = 'MEDICAL_EXPENSE',
 }
+/*
+DocumentType = Literal[
+    "protection_gap_analysis",      # 保障缺口分析
+    "retirement_planning",          # 退休生活規劃
+    "medical_reserve_analysis",     # 醫療儲備分析
+    "third_party_calculator",       # 第三方計算器結果
+    "bank_statement",               # 銀行對帳單
+    "income_statement",             # 收入證明
+    "other"                         # 其他類型
+]
+*/
 
 export type RecordFile = {
     id: string;
